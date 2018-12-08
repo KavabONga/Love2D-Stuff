@@ -7,7 +7,7 @@ SPEED = 300
 -- The ball constants
 BALL_START_SPEED = 200
 BALL_SPEEDUP = 15
-BALL_MAX_SPEED = 450
+BALL_MAX_SPEED = 420
 BALL_RADIUS = 5
 
 -- Window dimensions
@@ -61,7 +61,7 @@ end
 
 function love.load()
 	push = require 'push'
-	scoreFont = love.graphics.newFont("LuckiestGuy-Regular.ttf", 30)
+	scoreFont = love.graphics.newFont("res/LuckiestGuy-Regular.ttf", 30)
 	love.graphics.setFont(scoreFont)
 	restartPlatforms()
 	startGame()
