@@ -1,6 +1,5 @@
 local kirby
-
-local defaultShader = [[
+local pixelatingShaderCode = [[
 	uniform vec2 resolution;
 	vec4 effect( vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords )
     {
@@ -8,8 +7,8 @@ local defaultShader = [[
         return texcolor * color;
     }
 ]]
-
 local shader
+
 local time
 local res = 3
 
@@ -21,7 +20,7 @@ function love.load()
 		resizable = false,
 		vsync = true
 	})
-	shader = love.graphics.newShader(defaultShader)
+	shader = love.graphics.newShader(pixelatingShaderCode)
 end
 
 function love.update(dt)
