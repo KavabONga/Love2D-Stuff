@@ -6,7 +6,7 @@ Stick = require 'Stick'
 Shape = require 'Shape'
 
 
-local SCALE, SPACE = 90, 10
+local SCALE, SPACE = 90, 20
 local WIDTH, HEIGHT = 800, 600
 
 -- A shape for each digit
