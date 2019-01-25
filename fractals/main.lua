@@ -1,6 +1,12 @@
 Vector = require 'vector'
 
-local time = 0
+local time
+width, height = love.graphics.getWidth(), love.graphics.getHeight()
+
+function love.load()
+	time = 0
+	-- width, height = love.graphics.getWidth(), love.graphics.getHeight()
+end
 
 function vecPoint(a)
 	love.graphics.points(a.x, a.y)
@@ -11,7 +17,7 @@ function vecLine(a, b)
 end
 
 function recursiveTriFractal(pos, side)
-	if pos.x > love.graphics.getWidth() or pos.y > love.graphics.getHeight() then
+	if pos.x > width or pos.y > height then
 		return
 	end
 	if side < 1 then
@@ -24,7 +30,7 @@ function recursiveTriFractal(pos, side)
 end
 
 function drawTriFractal()
-	recursiveTriFractal(Vector(love.graphics.getWidth() / 4, love.graphics.getHeight() / 4), love.graphics.getWidth() * math.pow(1.5, time) / 2)
+	recursiveTriFractal(Vector(width / 4, height / 4), width * math.pow(1.5, time) / 2)
 end
 
 function recursiveTreeFractal(pos, side, angle, rotation)
@@ -40,23 +46,23 @@ function recursiveTreeFractal(pos, side, angle, rotation)
 	end
 end
 function drawTreeFractal()
-	recursiveTreeFractal(Vector(love.graphics.getWidth() / 2, love.graphics.getHeight()), love.graphics.getHeight() * 2 / 5, math.sin(time / 3) * math.pi / 2)
+	recursiveTreeFractal(Vector(width / 2, height), height * 2 / 5, math.sin(time / 3) * math.pi / 2)
 end
 
 function recursiveAngFractal(pos, side, rotation)
-	if pos.x > love.graphics.getWidth() + side * 3 or pos.y > love.graphics.getHeight() + side * 3 then
+	if pos.x > width + side * 3 or pos.y > height + side * 3 then
 		return
 	end
 	rotation = rotation or 0
-	local next1 = pos + Vector(side * 2, 0):rotated(rotation)
-	local next2 = pos + Vector(side, 0):rotated(rotation)
-	local next3 = pos + Vector(side * 3 / 2, -side * math.sqrt(3) / 2):rotated(rotation)
-	local next4 = pos + Vector(2 * side, 0):rotated(rotation)
+	local next1 = pos + Vector(side, 0):rotated(rotation)
+	local next2 = pos + Vector(side * 3 / 2, -side * math.sqrt(3) / 2):rotated(rotation)
+	local next3 = pos + Vector(side * 2, 0):rotated(rotation)
+	local next4 = pos + Vector(side * 3, 0):rotated(rotation)
 	if side >= 2 then
 		recursiveAngFractal(pos, side / 3, rotation)
-		recursiveAngFractal(next1, side / 3, rotation)
-		recursiveAngFractal(next2, side / 3, rotation - math.pi / 3)
-		recursiveAngFractal(next3, side / 3, rotation + math.pi / 3)
+		recursiveAngFractal(next1, side / 3, rotation - math.pi / 3)
+		recursiveAngFractal(next2, side / 3, rotation + math.pi / 3)
+		recursiveAngFractal(next3, side / 3, rotation)
 	else
 		vecLine(pos, next1)
 		vecLine(next1, next2)
@@ -66,16 +72,82 @@ function recursiveAngFractal(pos, side, rotation)
 end
 
 function drawAngFractal() 
-	recursiveAngFractal(Vector(0, love.graphics.getHeight() * 2 / 3), love.graphics.getWidth() / 2 * math.pow(1.5, time), 0)
+	recursiveAngFractal(Vector(0, height * 2 / 3), width / 2 * math.pow(1.5, time), 0)
 end
 
-local fractals = {drawTriFractal, drawTreeFractal, drawAngFractal}
+function recursiveAnimateAng(pos, side, k, rotation)
+	rotation = rotation or 0
+	local next1 = pos + Vector(side, 0):rotated(rotation)
+	local next2 = pos + Vector(side * 3 / 2, -side * math.sqrt(3) / 2):rotated(rotation)
+	local next3 = pos + Vector(side * 2, 0):rotated(rotation)
+	local next4 = pos + Vector(side * 3, 0):rotated(rotation)
+	if k < 1 then
+		vecLine(pos, next1)
+		vecLine(next3, next4)
+		if k < 0.5 then
+			vecLine(next1, next1 + (next2 - next1) * k * 2)
+		else
+			vecLine(next1, next2)
+			vecLine(next2, next2 + (next3 - next2) * (2 * k - 1))
+		end
+		vecLine(next1 + (next3 - next1) * k, next3)
+	else
+		recursiveAnimateAng(pos, side / 3, k - 1, rotation)
+		recursiveAnimateAng(next1, side / 3, k - 1, rotation - math.pi / 3)
+		recursiveAnimateAng(next2, side / 3, k - 1, rotation + math.pi / 3)
+		recursiveAnimateAng(next3, side / 3, k - 1, rotation)
+	end
+end
 
-local fractalFunctionIndex = 1
+function animateAng()
+	recursiveAnimateAng(Vector(0, height * 2 / 3), width / 3, math.abs((time + 7) % 15 - 7))
+end
+
+function recursiveAnimateTri(pos, side, k)
+	local a1, a2, a3 = pos + Vector(side / 4, -side * math.sqrt(3) / 4), pos + Vector(side * 3 / 4, -side * math.sqrt(3) / 4), pos + Vector(side / 2, 0)
+	if k > 1 then
+		vecLine(a1, a2)
+		vecLine(a2, a3)
+		vecLine(a3, a1)
+		recursiveAnimateTri(pos, side / 2, k - 1)
+		recursiveAnimateTri(a1, side / 2, k - 1)
+		recursiveAnimateTri(a3, side / 2, k - 1)
+	else
+		vecLine(a1, a1 + (a2 - a1) * k)
+		vecLine(a2, a2 + (a3 - a2) * k)
+		vecLine(a3, a3 + (a1 - a3) * k)
+	end
+end
+
+function animateTri()
+	recursiveAnimateTri(Vector(width / 8, height * 7 / 8), width * 3 / 4, math.abs((time + 8) % 17 - 8))
+end
+
+local fractals = {
+	{drawTriFractal, animateTri}, 
+	{drawTreeFractal}, 
+	{drawAngFractal, animateAng}
+}
+
+local fractalIndex, fractalSubIndex = 1, 1
 
 function love.keypressed(key)
-	if key == 'space' then
-		fractalFunctionIndex = fractalFunctionIndex % #fractals + 1
+	if key == 'space' or key == 'down' then
+		fractalIndex = fractalIndex % #fractals + 1
+		fractalSubIndex = 1
+		time = 0
+	end
+	if key == 'up' then
+		fractalIndex = (fractalIndex - 2) % #fractals + 1
+		fractalSubIndex = 1
+		time = 0
+	end
+	if key == 'left' then
+		fractalSubIndex = (fractalSubIndex - 2) % #fractals[fractalIndex] + 1
+		time = 0
+	end
+	if key == 'right' then
+		fractalSubIndex = fractalSubIndex % #fractals[fractalIndex] + 1
 		time = 0
 	end
 end
@@ -88,6 +160,11 @@ function love.update(dt)
 	time = time + dt
 end
 
+function love.wheelmoved(x, y)
+	time = time + y / 10
+end
+
 function love.draw()
-	fractals[fractalFunctionIndex]()
+	love.graphics.print(time, 0, 0)
+	fractals[fractalIndex][fractalSubIndex]()
 end
