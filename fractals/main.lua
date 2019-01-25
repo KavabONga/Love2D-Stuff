@@ -11,7 +11,7 @@ function vecLine(a, b)
 end
 
 function recursiveTriFractal(pos, side)
-	if pos.x < 0 or pos.y < 0 or pos.x > love.graphics.getWidth() or pos.y > love.graphics.getHeight() then
+	if pos.x > love.graphics.getWidth() or pos.y > love.graphics.getHeight() then
 		return
 	end
 	if side < 1 then
@@ -24,7 +24,7 @@ function recursiveTriFractal(pos, side)
 end
 
 function drawTriFractal()
-	recursiveTriFractal(Vector(love.graphics.getWidth() / 4, love.graphics.getHeight() / 4), love.graphics.getWidth() * math.pow(1.5, time) / 5)
+	recursiveTriFractal(Vector(love.graphics.getWidth() / 4, love.graphics.getHeight() / 4), love.graphics.getWidth() * math.pow(1.5, time) / 2)
 end
 
 function recursiveTreeFractal(pos, side, angle, rotation)
@@ -44,7 +44,7 @@ function drawTreeFractal()
 end
 
 function recursiveAngFractal(pos, side, rotation)
-	if pos.x > 2 * love.graphics.getWidth() or pos.y > 2 * love.graphics.getHeight() then
+	if pos.x > love.graphics.getWidth() + side * 3 or pos.y > love.graphics.getHeight() + side * 3 then
 		return
 	end
 	rotation = rotation or 0
