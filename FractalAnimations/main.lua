@@ -1,9 +1,20 @@
 -- Made by: Dmitry Shabat
 
--- Resource Lua files return list of drawing functions related to the shape
+-- Resource Lua files from fractals/ return lists of drawing functions (that take no arguments in) related to the shape
+
+-- Defined global variables:
+--[[
+	time - Time in seconds passed after Love loaded
+	width, height - Window resolution
+	Vector - arithmetic 2D vector class
+]]
+-- Defined global functions:
+--[[
+	vecPoint - Takes in a vector, draws a point at the coordinates
+	vecLine - Takes two vectors, draws a line conecting the coordinates
+]]
 
 Vector = require 'vector'
--- width, height
 
 function love.load()
 	time = 0
@@ -23,7 +34,8 @@ end
 local fractals = {
 	require 'fractals.triangle', 
 	require 'fractals.tree',
-	require 'fractals.ang'
+	require 'fractals.ang',
+	require 'fractals.dragon'
 }
 
 local fractalIndex, fractalSubIndex = 1, 1
@@ -54,6 +66,7 @@ end
 
 function love.update(dt)
 	time = time + dt
+	width, height = love.graphics.getWidth(), love.graphics.getHeight()
 end
 
 function love.wheelmoved(x, y)
