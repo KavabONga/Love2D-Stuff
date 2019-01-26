@@ -17,7 +17,7 @@ end
 
 function recursiveAnimateTri(pos, side, k)
 	local a1, a2, a3 = pos + Vector(side / 4, -side * math.sqrt(3) / 4), pos + Vector(side * 3 / 4, -side * math.sqrt(3) / 4), pos + Vector(side / 2, 0)
-	if k > 1 then
+	if k >= 1 then
 		vecLine(a1, a2)
 		vecLine(a2, a3)
 		vecLine(a3, a1)

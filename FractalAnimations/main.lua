@@ -29,15 +29,21 @@ function vecLine(a, b)
 	love.graphics.line(a.x, a.y, b.x, b.y)
 end
 
--- function recursiveDraw(pos, side, )
+function clamp(x, a, b)
+	return math.min(math.max(x, a), b)
+end
 
+
+-- Menu of the fractal animations
 local fractals = {
-	require 'fractals.triangle', 
+	require 'fractals.triangle',
 	require 'fractals.tree',
 	require 'fractals.ang',
-	require 'fractals.dragon'
+	require 'fractals.dragon',
+	require 'fractals.curve'
 }
 
+-- Current choice in menu
 local fractalIndex, fractalSubIndex = 1, 1
 
 function love.keypressed(key)
@@ -78,19 +84,19 @@ function love.draw()
 	love.graphics.print(time, 0, 0)
 	love.graphics.setColor(1, 1, 1, 1)
 	fractals[fractalIndex][fractalSubIndex]()
-	local rowy = height - 10
+	local ry = height - 10
 	for row = #fractals, 1, -1 do
-		colx = 10
+		rx = 10
 		for col = 1, #fractals[row] do
 			if row == fractalIndex and col == fractalSubIndex then
 				love.graphics.setColor(0, 1, 0, 1)
 			else
 				love.graphics.setColor(0, 0, 1, 1)
 			end
-			love.graphics.rectangle('fill', colx, rowy - 10, 10, 10)
+			love.graphics.rectangle('fill', rx, ry - 10, 10, 10)
 			love.graphics.setColor(1, 1, 1, 1)
-			colx = colx + 15
+			rx = rx + 15
 		end
-		rowy = rowy - 15
+		ry = ry - 15
 	end
 end

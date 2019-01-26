@@ -11,7 +11,7 @@ function recursiveDrawDragon(pos, steps, side, rotation)
 end
 
 function drawDragon()
-	recursiveDrawDragon(Vector(width / 2, height / 2), math.floor(math.abs((time * 3 + 13) % 26 - 13)), 10)
+	recursiveDrawDragon(Vector(width / 2, height / 2), math.floor(math.abs((time * 3 + 15) % 31 - 15)), 8)
 end
 
 return {drawDragon}
