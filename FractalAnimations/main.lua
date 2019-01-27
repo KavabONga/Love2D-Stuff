@@ -40,7 +40,8 @@ local fractals = {
 	require 'fractals.tree',
 	require 'fractals.ang',
 	require 'fractals.dragon',
-	require 'fractals.curve'
+	require 'fractals.curve',
+	require 'fractals.rectangular'
 }
 
 -- Current choice in menu
